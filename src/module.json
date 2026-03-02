@@ -1,13 +1,14 @@
 {
     "id": "stems",
     "name": "Stem Separation",
-    "version": "0.1.0",
-    "description": "Separate audio into drums, vocals, and accompaniment stems",
+    "version": "0.2.0",
+    "description": "Separate audio into drums, vocals, and accompaniment stems (0.5x realtime)",
     "author": "Move Anything",
     "component_type": "tool",
     "tool_config": {
         "command": "separate",
         "input_extensions": [".wav"],
-        "stems": ["drums", "vocals", "accompaniment"]
+        "stems": ["drums", "vocals", "accompaniment"],
+        "processing_ratio": 0.5
     }
 }

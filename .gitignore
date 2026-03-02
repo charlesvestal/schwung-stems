@@ -1,0 +1,7 @@
+dist/
+test-output/
+engine/spleeter-move/
+engine/spleeter4-build/
+engine/demucs-move-aarch64/
+engine/model/
+.DS_Store
