@@ -18,6 +18,30 @@ mkdir -p "$OUTPUT_DIR"
 # Lower priority so Move UI stays responsive
 renice 15 $$ >/dev/null 2>&1
 
+# Enable temporary swap to avoid OOM on large files.
+# The Move has ~1.3GB free RAM; spleeter can exceed that on tracks >3 min.
+# Swap is only active during processing and removed on exit.
+SWAPFILE="/data/UserData/.stems-swap"
+SWAP_SIZE_MB=1024
+SWAP_ACTIVE=0
+
+cleanup_swap() {
+    if [ "$SWAP_ACTIVE" = "1" ]; then
+        swapoff "$SWAPFILE" 2>/dev/null
+        rm -f "$SWAPFILE"
+    fi
+}
+trap cleanup_swap EXIT
+
+if [ ! -f "$SWAPFILE" ]; then
+    dd if=/dev/zero of="$SWAPFILE" bs=1M count="$SWAP_SIZE_MB" 2>/dev/null
+    chmod 600 "$SWAPFILE"
+    mkswap "$SWAPFILE" >/dev/null 2>&1
+fi
+if swapon "$SWAPFILE" 2>/dev/null; then
+    SWAP_ACTIVE=1
+fi
+
 export LD_LIBRARY_PATH="$SCRIPT_DIR/engine:$LD_LIBRARY_PATH"
 
 # SpleeterRT uses full input filename (with ext) as output prefix
